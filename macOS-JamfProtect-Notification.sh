@@ -1,4 +1,11 @@
-﻿jamfHelper="/Library/Application Support/JAMF/bin/jamfHelper.app/Contents/MacOS/jamfHelper"
+#!/bin/bash
+
+# From Jamf to use as a notification for users that
+# may have had malicious activity
+#
+
+
+jamfHelper="/Library/Application Support/JAMF/bin/jamfHelper.app/Contents/MacOS/jamfHelper"
 
 #Header for Pop Up
 heading="IT Security Notification" 
