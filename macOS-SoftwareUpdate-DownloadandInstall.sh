@@ -1,3 +1,9 @@
-﻿#!/bin/sh
+#!/bin/sh
 
-softwareupdate --install --all --restart
+#
+# Quick and dirty, install all updates and restart
+# using the softwareupdate binary
+# @robjschroeder
+#
+
+/usr/sbin/softwareupdate --install --all --restart
