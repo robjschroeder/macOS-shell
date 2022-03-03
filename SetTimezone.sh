@@ -1,4 +1,8 @@
-﻿#!/bin/sh
+#!/bin/sh
+
+# Copied over from https://github.com/jamf/Jamf-Nation-Scripts/blob/master/setTimeZone.sh
+# Updated: 3.02.2022 @robjschroeder
+#
 ####################################################################################################
 #
 # Copyright (c) 2010, JAMF Software, LLC.  All rights reserved.
