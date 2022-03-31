@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# From https://github.com/aysiu
+
 ## Note (6 Dec., 2019): This no longer seems to work in Catalina (10.15).
 ## If you have any PRs to fix, I'm open to reviewing and merging.
 
