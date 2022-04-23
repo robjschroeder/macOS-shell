@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# Identifies mobile accounts on macOS
+# then deletes them securely, unless the
+# currently logged in user is a mobile user, 
+# then the script will skip deleting that user.
+#
+# Updated: 4.22.2022 @ Robjschroeder 
 
 # Get the currently logged in user, if any
 loggedInUser=$( scutil <<< "show State:/Users/ConsoleUser" | awk '/Name :/ && ! /loginwindow/ { print $3 }' )
