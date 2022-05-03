@@ -25,6 +25,6 @@ computerName=${serial}
 /usr/local/bin/jamf setComputerName -name ${computerName}
 /usr/local/bin/jamf recon
 
-echo "Computer name has been changed from ${oldcomputername} to ${computerName}
+echo "Computer name has been changed from ${oldComputerName} to ${computerName}"
 
 exit 0
