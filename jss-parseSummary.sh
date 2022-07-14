@@ -211,20 +211,20 @@ fi
 #Parse the data and print out the results
 echo $echomode "JSS Version: \t\t\t\t $(echo "$basicInfo" | awk '/Installed Version/ {print $NF}')"
 echo $echomode "Managed Computers: \t\t\t $computers"
-echo $echomode "Managed iOS Devices: \t\t $mobiles"
+echo $echomode "Managed iOS Devices: \t\t\t $mobiles"
 
 if (( $is999Later == "true" )) ; then
 	tvOSlater=$(echo "$basicInfo" | grep "Managed Apple TV Devices" | awk 'NR==1 {print $NF}')
 	tvOSearlier=$(echo "$basicInfo" | grep "Managed Apple TV Devices" | awk 'NR==2 {print $NF}')
 	tvs="$(( $tvOSlater + $tvOSearlier ))"
-	echo $echomode "Managed tvOS Devices: \t\t $tvs"
+	echo $echomode "Managed tvOS Devices: \t\t\t $tvs"
 fi
 
-echo $echomode "Server OS: \t\t\t\t\t $(echo "$basicInfo" | grep "Operating System" | awk '{for (i=3; i<NF; i++) printf $i " "; print $NF}')"
+echo $echomode "Server OS: \t\t\t\t $(echo "$basicInfo" | grep "Operating System" | awk '{for (i=3; i<NF; i++) printf $i " "; print $NF}')"
 echo $echomode "Java Version: \t\t\t\t $(echo "$basicInfo" | awk '/Java Version/ {print $NF}')"
 echo $echomode "Database Size: \t\t\t\t $(echo "$basicInfo" | grep "Database Size" | awk 'NR==1 {print $(NF-1),$NF}')"
 echo $echomode "Maximum Pool Size:  \t\t\t $(echo "$basicInfo" | awk '/Maximum Pool Size/ {print $NF}') \t$(tput setaf 2)Recommended: $poolsizerec$(tput sgr0)"
-echo $echomode "Maximum MySQL Connections: \t $(echo "$basicInfo" | awk '/max_connections/ {print $NF}') \t$(tput setaf 2)Recommended: $sqlconnectionsrec$(tput sgr0)"
+echo $echomode "Maximum MySQL Connections: \t\t $(echo "$basicInfo" | awk '/max_connections/ {print $NF}') \t$(tput setaf 2)Recommended: $sqlconnectionsrec$(tput sgr0)"
 
 #Alert if binary logging is enabled
 binlogging=$(echo "$basicInfo" | awk '/log_bin/ {print $NF}')
@@ -233,15 +233,15 @@ if [ "$binlogging" = "OFF" ] ; then
 else
 	echo $echomode "Bin Logging: \t\t\t\t $(echo "$basicInfo" | awk '/log_bin/ {print $NF}') \t$(tput setaf 9)Is there a reason binary logging is enabled (MySQL Replication)?\t[!]$(tput sgr0)"
 fi
-echo $echomode "Max Allowed Packet Size: \t $(($(echo "$basicInfo" | awk '/max_allowed_packet/ {print $NF}')/ 1048576)) MB $(tput setaf 2)Recommended: $maxpacketrec$(tput sgr0)"
+echo $echomode "Max Allowed Packet Size: \t\t $(($(echo "$basicInfo" | awk '/max_allowed_packet/ {print $NF}')/ 1048576)) MB $(tput setaf 2)Recommended: $maxpacketrec$(tput sgr0)"
 echo $echomode "MySQL Version: \t\t\t\t $(echo "$basicInfo" | awk '/version ..................../ {print $NF}')"
 
 #Alert user to change management being disabled
 changemanagement=$(echo "$subInfo" | awk '/Use Log File/ {print $NF}')
 if [ "$changemanagement" = "false" ] ; then
-	echo $echomode "Change Management Enabled: \t $(echo "$subInfo" | awk '/Use Log File/ {print $NF}') \t$(tput setaf 2)Recommended: On$(tput sgr0)"
+	echo $echomode "Change Management Enabled: \t\t $(echo "$subInfo" | awk '/Use Log File/ {print $NF}') \t$(tput setaf 2)Recommended: On$(tput sgr0)"
 else
-	echo $echomode "Change Management Enabled: \t $(echo "$subInfo" | awk '/Use Log File/ {print $NF}') \t$(tput setaf 2)✓$(tput sgr0)"
+	echo $echomode "Change Management Enabled: \t\t $(echo "$subInfo" | awk '/Use Log File/ {print $NF}') \t$(tput setaf 2)✓$(tput sgr0)"
 fi
 
 # Check log path against current operating system version, if non-default show warning
@@ -275,15 +275,15 @@ fi
 #Search for the built-in name in the SSL subject, if it is not detected it must be a third party cert or broken so alert user
 sslsubject=$(echo "$subInfo" | awk '/SSL Cert Subject/ {$1=$2=$3="";print $0}' | grep "O=JAMF Software")
 if [ "$sslsubject" = "" ] ; then
-	echo $echomode "SSL Certificate Subject: \t $(echo "$subInfo" | awk '/SSL Cert Subject/ {$1=$2=$3="";print $0}') $(tput setaf 9)[!]$(tput sgr0)"
+	echo $echomode "SSL Certificate Subject: \t\t $(echo "$subInfo" | awk '/SSL Cert Subject/ {$1=$2=$3="";print $0}') $(tput setaf 9)[!]$(tput sgr0)"
 else
-	echo $echomode "SSL Certificate Subject: \t      $(echo "$subInfo" | awk '/SSL Cert Subject/ {$1=$2=$3="";print $0}')"
+	echo $echomode "SSL Certificate Subject: \t\t $(echo "$subInfo" | awk '/SSL Cert Subject/ {$1=$2=$3="";print $0}')"
 fi
 
 ssldate=$(echo "$subInfo" | awk '/SSL Cert Expires/ {print $NF}')
 if [[ "$ssldate" != "" && "$ssldate" != "Expires" ]]; then
 	sslepoch=$(date -jf "%Y/%m/%d %H:%M" "$ssldate 00:00" +"%s")		#convert it to unix epoch
-	ssldifference=$(( "$sslepoch" - "$todayEPOCH" ))				#subtract ssl epoch from today's epoch
+	ssldifference=$(( $sslepoch - $todayEPOCH ))				#subtract ssl epoch from today's epoch
 	sslresult=$(($ssldifference/86400))					#divide by number of seconds in a day to get remaining days to expiration
 	
 	#If ssl is expiring in under 60 days, output remaining days in red instead of green
@@ -294,19 +294,19 @@ if [[ "$ssldate" != "" && "$ssldate" != "Expires" ]]; then
 	fi
 	
 else
-	echo $echomode "SSL Certification Expiration: Not Found"
+	echo $echomode "SSL Certification Expiration: \t\t Not Found"
 fi
 
 echo $echomode "HTTP Threads: \t\t\t\t $(echo "$subInfo" | awk '/HTTP Connector/ {print $NF}') \t$(tput setaf 2)Recommended: $httpthreadsrec$(tput sgr0)"
 echo $echomode "HTTPS Threads: \t\t\t\t $(echo "$subInfo" | awk '/HTTPS Connector/ {print $NF}') \t$(tput setaf 2)Recommended: $httpthreadsrec$(tput sgr0)"
-echo $echomode "JSS URL: \t\t\t\t\t $(echo "$subInfo" | awk '/HTTPS URL/ {print $NF}')"
+echo $echomode "JSS URL: \t\t\t\t $(echo "$subInfo" | awk '/HTTPS URL/ {print $NF}')"
 
 apnsdate=$(echo "$subInfo" | grep "Expires" | awk 'NR==2 {print $NF}')
 
 if [[ "$apnsdate" != "" ]]; then
 	
 	apnsepoch=$(date -jf "%Y/%m/%d %H:%M" "$apnsdate 00:00" +"%s")		#convert it to unix epoch
-	apnsdifference=$(( "$apnsepoch" - "$todayEPOCH" ))				#subtract apns epoch from today's epoch
+	apnsdifference=$(( $apnsepoch - $todayEPOCH ))				#subtract apns epoch from today's epoch
 	apnsresult=$(( $apnsdifference/86400 ))				#divide by number of seconds in a day to get remaining days to expiration
 	
 	#If apns is expiring in under 60 days, output remaining days in red instead of green
@@ -324,14 +324,14 @@ vppdate=$(cat $file | grep -A 100 "VPP Accounts" | awk '/Expiration Date/ {print
 if [[ -n $vppdate ]] ; then
 	for i in $vppdate; do
 		vppepoch=$(date -jf "%Y/%m/%d %H:%M" "$i 00:00" +"%s")				#convert it to unix epoch
-		vppdifference=$(( "$vppepoch" - "$todayEPOCH" ))				#subtract vpp epoch from today's epoch
+		vppdifference=$(( $vppepoch - $todayEPOCH ))				#subtract vpp epoch from today's epoch
 		vppresult=$(( $vppdifference/86400 ))					#divide by number of seconds in a day to get remaining days to expiration
 		
 		#If vpp token is expiring in under 60 days, output remaining days in red instead of green
 		if (( $vppresult > 60 )) ; then
-			echo $echomode "VPP Token Expiration: \t\t $i \t$(tput setaf 2)$vppresult Days$(tput sgr0)"
+			echo $echomode "VPP Token Expiration: \t\t\t $i \t$(tput setaf 2)$vppresult Days$(tput sgr0)"
 		else
-			echo $echomode "VPP Token Expiration: \t\t $i \t$(tput setaf 9)$vppresult Days$(tput sgr0)"
+			echo $echomode "VPP Token Expiration: \t\t\t $i \t$(tput setaf 9)$vppresult Days$(tput sgr0)"
 		fi
 	done
 fi
@@ -339,9 +339,9 @@ fi
 #Detect whether external CA is enabled and warn user
 thirdpartycert=$(echo "$subInfo" | awk '/External CA enabled/ {print $NF}')
 if [ "$thirdpartycert" = "false" ] ; then
-	echo $echomode "External CA Enabled: \t\t $(echo "$subInfo" | awk '/External CA enabled/ {print $NF}')"
+	echo $echomode "External CA Enabled: \t\t\t $(echo "$subInfo" | awk '/External CA enabled/ {print $NF}')"
 else
-	echo $echomode "External CA Enabled: \t\t $(echo "$(tput setaf 3)$subInfo" | awk '/External CA enabled/ {print $NF}') \t$(tput setaf 9)[!]$(tput sgr0)"
+	echo $echomode "External CA Enabled: \t\t\t $(echo "$(tput setaf 3)$subInfo" | awk '/External CA enabled/ {print $NF}') \t$(tput setaf 9)[!]$(tput sgr0)"
 fi
 echo $echomode "Log Flushing Time: \t\t\t $(echo "$subInfo" | grep "Each Day" | awk '{for (i=7; i<NF; i++) printf $i " "; print $NF}') \t$(tput setaf 2)Recommended: Stagger time from nightly backup$(tput sgr0)"
 
@@ -365,17 +365,17 @@ else
 fi
 
 echo $echomode "Check in Frequency: \t\t\t $(echo "$checkInInfo" | awk '/Check-in Frequency/ {print $NF}')"
-echo $echomode "Login/Logout Hooks enabled: \t $(echo "$checkInInfo" | awk '/Logout Hooks/ {print $NF}')"
+echo $echomode "Login/Logout Hooks enabled: \t\t $(echo "$checkInInfo" | awk '/Logout Hooks/ {print $NF}')"
 echo $echomode "Startup Script enabled: \t\t $(echo "$checkInInfo" | awk '/Startup Script/ {print $NF}')"
-echo $echomode "Flush history on re-enroll: \t $(echo "$checkInInfo" | awk '/Flush history on re-enroll/ {print $NF}')"
+echo $echomode "Flush history on re-enroll: \t\t $(echo "$checkInInfo" | awk '/Flush history on re-enroll/ {print $NF}')"
 echo $echomode "Flush location info on re-enroll: \t $(echo "$checkInInfo" | awk '/Flush location information on re-enroll/ {print $NF}')"
 
 #Warn user if push notifications are disabled
 pushnotifications=$(echo "$checkInInfo" | awk '/Push Notifications Enabled/ {print $NF}')
 if [ "$pushnotifications" = "true" ] ; then
-	echo $echomode "Push Notifications enabled: \t $(echo "$checkInInfo" | awk '/Push Notifications Enabled/ {print $NF}')"
+	echo $echomode "Push Notifications enabled: \t\t $(echo "$checkInInfo" | awk '/Push Notifications Enabled/ {print $NF}')"
 else
-	echo $echomode "Push Notifications enabled: \t $(echo "$checkInInfo" | awk '/Push Notifications Enabled/ {print $NF}') \t$(tput setaf 9)[!]$(tput sgr0)"
+	echo $echomode "Push Notifications enabled: \t\t $(echo "$checkInInfo" | awk '/Push Notifications Enabled/ {print $NF}') \t$(tput setaf 9)[!]$(tput sgr0)"
 fi
 
 sslverification=$(echo "$checkInInfo" | awk '/Certificate must be valid/ {print $NF}')
