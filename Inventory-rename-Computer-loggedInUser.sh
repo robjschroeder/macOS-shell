@@ -4,7 +4,7 @@
 # computer model name i.e tinotest-MacBookPro
 # Then updates the computer name in Jamf Pro
 #
-# Updated: 2.28.2022 @ Robjschroeder
+# Updated: 12.16.2022 @ Robjschroeder
 
 # Set variables
 
@@ -31,6 +31,6 @@ scutil --set LocalHostName ${computerName}
 /usr/local/bin/jamf setComputerName -name ${computerName}
 /usr/local/bin/jamf recon
 
-echo "Computer name has been changed from ${oldcomputername} to ${computerName}
+echo "Computer name has been changed from ${oldcomputername} to ${computerName}"
 
 exit 0
